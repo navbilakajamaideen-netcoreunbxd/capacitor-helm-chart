@@ -1,6 +1,3 @@
 apiVersion: v2
 name: capacitor
-description: Capacitor UI for Flux
-version: 0.1.2
-appVersion: "v0.4.3"
-type: application
+version: 0.1.0

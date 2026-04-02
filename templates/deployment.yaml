@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: capacitor
+  name: {{ .Release.Name }}
   labels:
     app: capacitor
 spec:
@@ -14,7 +14,7 @@ spec:
       labels:
         app: capacitor
     spec:
-      serviceAccountName: capacitor
+      serviceAccountName: {{ .Release.Name }}
 
       containers:
         - name: capacitor
@@ -22,12 +22,16 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
 
           ports:
-            - containerPort: 9000 
+            - containerPort: 9000
+
           env:
             - name: AUTH
               value: "noauth"
             - name: IMPERSONATE_SA_RULES
               value: "noauth=monitoring:capacitor"
+            - name: CLUSTER_NAME
+              value: "{{ .Values.clusterName }}"
+
           resources:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}
@@ -36,9 +40,22 @@ spec:
               cpu: {{ .Values.resources.limits.cpu }}
               memory: {{ .Values.resources.limits.memory }}
 
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 9000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 9000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
           securityContext:
             allowPrivilegeEscalation: false
-            
             capabilities:
               drop:
                 - ALL

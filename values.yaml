@@ -1,6 +1,7 @@
 replicaCount: 1
 
-clusterName: default-cluster
+clusterName: ""
+
 image:
   repository: ghcr.io/gimlet-io/capacitor
   tag: v0.4.3
@@ -11,9 +12,9 @@ service:
   port: 9000
 
 ingress:
-  enabled: true
+  enabled: false
   className: nginx
-  host: capacitor.default.com
+  host: ""
 
 resources:
   requests:
